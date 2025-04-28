@@ -65,6 +65,102 @@ function switchTheme(theme) {
   }
 }
 
+class ChatDatabase {
+  constructor() {
+    this.dbName = 'ChatAppDatabase';
+    this.dbVersion = 1;
+    this.storeName = 'chatSessions';
+    this.db = null;
+  }
+
+  // Open or create the database
+  async openDB() {
+    return new Promise((resolve, reject) => {
+      const request = indexedDB.open(this.dbName, this.dbVersion);
+
+      request.onerror = (event) => {
+        console.error('Database error:', event.target.error);
+        reject(event.target.error);
+      };
+
+      request.onsuccess = (event) => {
+        this.db = event.target.result;
+        resolve(this.db);
+      };
+
+      request.onupgradeneeded = (event) => {
+        const db = event.target.result;
+        if (!db.objectStoreNames.contains(this.storeName)) {
+          db.createObjectStore(this.storeName, { keyPath: 'id', autoIncrement: true });
+        }
+      };
+    });
+  }
+
+  // Get all chat sessions
+  async getAllChatSessions() {
+    await this.openDB();
+    return new Promise((resolve, reject) => {
+      const transaction = this.db.transaction([this.storeName], 'readonly');
+      const store = transaction.objectStore(this.storeName);
+      const request = store.getAll();
+
+      request.onerror = (event) => {
+        console.error('Error getting all chats:', event.target.error);
+        reject(event.target.error);
+      };
+
+      request.onsuccess = (event) => {
+        resolve(event.target.result || []);
+      };
+    });
+  }
+
+  // Add or update a chat session
+  async saveChatSession(session) {
+    await this.openDB();
+    return new Promise((resolve, reject) => {
+      const transaction = this.db.transaction([this.storeName], 'readwrite');
+      const store = transaction.objectStore(this.storeName);
+
+      const request = session.id 
+        ? store.put(session) 
+        : store.add(session);
+
+      request.onerror = (event) => {
+        console.error('Error saving chat:', event.target.error);
+        reject(event.target.error);
+      };
+
+      request.onsuccess = (event) => {
+        resolve(event.target.result); // Returns the ID of the saved session
+      };
+    });
+  }
+
+  // Delete a chat session
+  async deleteChatSession(id) {
+    await this.openDB();
+    return new Promise((resolve, reject) => {
+      const transaction = this.db.transaction([this.storeName], 'readwrite');
+      const store = transaction.objectStore(this.storeName);
+      const request = store.delete(id);
+
+      request.onerror = (event) => {
+        console.error('Error deleting chat:', event.target.error);
+        reject(event.target.error);
+      };
+
+      request.onsuccess = (event) => {
+        resolve(true);
+      };
+    });
+  }
+}
+
+// Initialize the database
+const chatDB = new ChatDatabase();
+
 // Function to change background video
 function changeBackgroundVideo(videoPath) {
   backgroundVideo.src = videoPath;
@@ -128,36 +224,74 @@ let currentSession = []; // Current chat session
 
 const initialInputHeight = messageInput.scrollHeight;
 
-// Save chat sessions to localStorage
-function saveChatSessions() {
-  localStorage.setItem("chatSessions", JSON.stringify(chatSessions));
+// Replace the saveChatSessions function
+async function saveChatSessions() {
+  try {
+    // Save each session individually
+    for (const session of chatSessions) {
+      await chatDB.saveChatSession(session);
+    }
+    console.log('Chat sessions saved to IndexedDB');
+  } catch (error) {
+    console.error('Error saving chat sessions:', error);
+  }
 }
 
 // Load chat sessions from localStorage
-function loadChatSessions() {
-  const savedSessions = localStorage.getItem("chatSessions");
-  if (savedSessions) {
-    chatSessions = JSON.parse(savedSessions);
-    currentSessionIndex = chatSessions.length - 1; // Set to the latest session
-    currentSession = chatSessions[currentSessionIndex]?.messages || [];
-  } else {
-    // Create the first chat session automatically
-    const newSession = {
-      title: "Chat 1",
-      messages: [
-        {
-          role: "model",
-          parts: [{ text: "Hey there, <br /> How can I help you today?" }],
-        },
-      ],
-      favorite: false,
-    };
-    chatSessions.push(newSession);
-    currentSessionIndex = 0;
-    currentSession = [...newSession.messages];
-    saveChatSessions();
+// Modify the loadChatSessions function to return a Promise
+async function loadChatSessions() {
+  try {
+    const savedSessions = await chatDB.getAllChatSessions();
+    
+    if (savedSessions && savedSessions.length > 0) {
+      chatSessions = savedSessions;
+      // Try to restore the last opened session from localStorage
+      const lastSessionIndex = localStorage.getItem('lastSessionIndex');
+      currentSessionIndex = lastSessionIndex !== null ? parseInt(lastSessionIndex) : chatSessions.length - 1;
+      currentSession = chatSessions[currentSessionIndex]?.messages || [];
+      
+      // Immediately load the chat history UI
+      loadChatHistory();
+      
+      // Load the chat content if we have a valid session
+      if (currentSessionIndex !== -1) {
+        loadChat(currentSessionIndex);
+      }
+    } else {
+      // Create the first chat session automatically
+      const newSession = {
+        title: "Chat 1",
+        messages: [
+          {
+            role: "model",
+            parts: [{ text: "Hey there, <br /> How can I help you today?" }],
+          },
+        ],
+        favorite: false,
+      };
+      
+      const newId = await chatDB.saveChatSession(newSession);
+      newSession.id = newId;
+      chatSessions.push(newSession);
+      currentSessionIndex = 0;
+      currentSession = [...newSession.messages];
+      
+      // Save the last session index
+      localStorage.setItem('lastSessionIndex', '0');
+      
+      // Load the UI
+      loadChatHistory();
+      loadChat(currentSessionIndex);
+    }
+  } catch (error) {
+    console.error('Error loading chat sessions:', error);
   }
 }
+
+// Modify the window load event listener
+window.addEventListener("load", async () => {
+  await loadChatSessions(); // Wait for sessions to load
+});
 
 // Load chat history when the page loads
 window.addEventListener("load", () => {
@@ -625,10 +759,10 @@ const loadChatMessages = (messages) => {
           </div>`;
       }
 
-      // Add image/video attachment if exists
-      if (fileData.mime_type.startsWith("image/")) {
+      // Add image/video attachment if exists and data is available
+      if (fileData.data && fileData.mime_type.startsWith("image/")) {
         messageContent += `<img src="data:${fileData.mime_type};base64,${fileData.data}" class="attachment" />`;
-      } else if (fileData.mime_type.startsWith("video/")) {
+      } else if (fileData.data && fileData.mime_type.startsWith("video/")) {
         messageContent += `
           <div class="video-container">
             <video controls class="attachment">
@@ -1347,6 +1481,7 @@ async function extractTextFromFile(file) {
 
 // Function to update file preview
 function updateFilePreview(file) {
+  console.log("Updating file preview for:", file.name); // Debug log
   const filePreview = document.createElement("div");
   filePreview.className = "file-preview show";
   
@@ -1361,6 +1496,7 @@ function updateFilePreview(file) {
            file.name.endsWith(".html") || 
            file.name.endsWith(".css")) fileType = "code";
   else if (file.type.startsWith("video/")) fileType = "video";
+  else if (file.type.startsWith("image/")) fileType = "image";
   
   // Create file preview HTML
   filePreview.innerHTML = `
@@ -1370,14 +1506,25 @@ function updateFilePreview(file) {
   `;
   
   // Insert the preview before the message input
-  document.querySelector(".chat-form").insertBefore(filePreview, messageInput);
+  const chatForm = document.querySelector(".chat-form");
+  if (chatForm) {
+    chatForm.insertBefore(filePreview, messageInput);
+  } else {
+    console.error("Chat form element not found"); // Debug log
+  }
   
   // Add event listener for cancel button
-  filePreview.querySelector("#file-cancel").addEventListener("click", () => {
-    fileInput.value = "";
-    userData.file = {};
-    filePreview.remove();
-  });
+  const cancelButton = filePreview.querySelector("#file-cancel");
+  if (cancelButton) {
+    cancelButton.addEventListener("click", () => {
+      console.log("File upload canceled"); // Debug log
+      fileInput.value = "";
+      userData.file = {};
+      filePreview.remove();
+    });
+  } else {
+    console.error("Cancel button not found in preview"); // Debug log
+  }
   
   return filePreview;
 }
@@ -1395,28 +1542,19 @@ fileInput.addEventListener("change", async () => {
   const filePreview = updateFilePreview(file);
   
   try {
+    // Handle the file (with size consideration)
+    const fileInfo = await handleLargeFile(file);
+    
     // Extract text from the file (for supported types)
     const fileText = await extractTextFromFile(file);
     
     // Store file data in userData
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const base64String = e.target.result.split(",")[1];
-      userData.file = {
-        data: base64String,
-        mime_type: file.type,
-        name: file.name,
-        textContent: fileText
-      };
+    userData.file = {
+      data: fileInfo.data,
+      mime_type: fileInfo.type,
+      name: fileInfo.name,
+      textContent: fileText
     };
-    
-    if (file.type.startsWith("image/")) {
-      // For images, read as data URL
-      reader.readAsDataURL(file);
-    } else {
-      // For other files, read as text (but we already have the text)
-      reader.readAsDataURL(new Blob([file])); // Still need to store as base64 for display
-    }
   } catch (error) {
     console.error("Error processing file:", error);
     fileInput.value = "";
@@ -1424,38 +1562,47 @@ fileInput.addEventListener("change", async () => {
   }
 });
 
+// Modify the handleOutgoingMessage function to handle files more efficiently
 const handleOutgoingMessage = async (e) => {
-  e.preventDefault();
-  userData.message = messageInput.value.trim();
+  if (e) e.preventDefault();
+  
+  // Get the message text and trim it
+  const messageText = messageInput.value.trim();
+  
+  // Check if we have either a message or a file
+  if (!messageText && (!userData.file || !userData.file.name)) {
+    console.log("No message or file to send");
+    return;
+  }
+  
+  // Store the message in userData
+  userData.message = messageText;
   messageInput.value = "";
   messageInput.dispatchEvent(new Event("input"));
   
   // Remove file preview if exists
   const filePreview = document.querySelector(".file-preview");
-  if (filePreview) filePreview.remove();
+  if (filePreview) {
+    filePreview.remove();
+  }
   
   // Create and display user message
   let messageContent = '';
   
-  // Add file preview for non-media files
-  if (userData.file.data && !userData.file.mime_type.startsWith("image/") && !userData.file.mime_type.startsWith("video/")) {
-    messageContent += `
-      <div class="message-preview">
-        <span class="file-icon" data-type="${getFileType(userData.file)}"></span>
-        <span class="file-name">${userData.file.name}</span>
-      </div>`;
-  }
-  
-  // Add the text message if exists
-  if (userData.message) {
-    messageContent += `<div class="message-text">${formatBotResponse(userData.message)}</div>`;
-  }
-  
-  // Add image/video attachment if exists
-  if (userData.file.data) {
-    if (userData.file.mime_type.startsWith("image/")) {
+  // Add file preview if we have a file
+  if (userData.file && userData.file.name) {
+    if (!userData.file.mime_type.startsWith("image/") && !userData.file.mime_type.startsWith("video/")) {
+      messageContent += `
+        <div class="message-preview">
+          <span class="file-icon" data-type="${getFileType(userData.file)}"></span>
+          <span class="file-name">${userData.file.name}</span>
+        </div>`;
+    }
+    
+    // Add image/video attachment if exists
+    if (userData.file.data && userData.file.mime_type.startsWith("image/")) {
       messageContent += `<img src="data:${userData.file.mime_type};base64,${userData.file.data}" class="attachment" />`;
-    } else if (userData.file.mime_type.startsWith("video/")) {
+    } else if (userData.file.data && userData.file.mime_type.startsWith("video/")) {
       messageContent += `
         <div class="video-container">
           <video controls class="attachment">
@@ -1464,6 +1611,11 @@ const handleOutgoingMessage = async (e) => {
           </video>
         </div>`;
     }
+  }
+  
+  // Add the text message if exists
+  if (userData.message) {
+    messageContent += `<div class="message-text">${formatBotResponse(userData.message)}</div>`;
   }
 
   const outgoingMessageDiv = createMessageElement(messageContent, "user-message");
@@ -1474,18 +1626,18 @@ const handleOutgoingMessage = async (e) => {
   const parts = [];
   
   // Store file data if exists
-  if (userData.file.data) {
+  if (userData.file && userData.file.name) {
     parts.push({
       file_data: {
-        data: userData.file.data,
         mime_type: userData.file.mime_type,
         name: userData.file.name,
-        textContent: userData.file.textContent
+        textContent: userData.file.textContent,
+        data: userData.file.data && userData.file.data.length < 50000000 ? userData.file.data : null
       }
     });
   }
   
-  // Store text message if exists (as separate part)
+  // Store text message if exists
   if (userData.message) {
     parts.push({ text: userData.message });
   }
@@ -1499,19 +1651,18 @@ const handleOutgoingMessage = async (e) => {
   // Update the chat session
   if (currentSessionIndex !== -1) {
     chatSessions[currentSessionIndex].messages = [...currentSession];
+    await chatDB.saveChatSession(chatSessions[currentSessionIndex]);
   }
 
   // Update the chat title with the first user message
   if (currentSessionIndex !== -1 && chatSessions[currentSessionIndex].messages.length === 2) {
     const userMessage = userData.message ? userData.message.substring(0, 30) : userData.file.name.substring(0, 30);
     chatSessions[currentSessionIndex].title = `${userMessage}...`;
+    await chatDB.saveChatSession(chatSessions[currentSessionIndex]);
     loadChatHistory();
   }
 
-  // Save chat sessions to localStorage
-  saveChatSessions();
-
-  // Simulate bot response with thinking indicator after a delay
+  // Simulate bot response
   setTimeout(() => {
     const thinkingDiv = document.createElement("div");
     thinkingDiv.classList.add("bot-message", "thinking");
@@ -1537,7 +1688,6 @@ const handleOutgoingMessage = async (e) => {
   // Reset file data
   userData.file = {};
 };
-
 // Add this helper function
 function getFileType(file) {
   if (file.mime_type === "application/pdf") return "pdf";
@@ -1641,14 +1791,15 @@ closeSidebar.addEventListener("click", () => {
   historySidebar.classList.remove("open");
 });
 
-// New Chat Button
-newChatBtn.addEventListener("click", () => {
+// Update the newChatBtn event listener
+newChatBtn.addEventListener("click", async () => {
   // Stop any currently playing TTS audio
   stopAllTTS();
 
   // Save the current session to chatSessions if it exists
   if (currentSession.length > 0 && currentSessionIndex !== -1) {
     chatSessions[currentSessionIndex].messages = [...currentSession];
+    await chatDB.saveChatSession(chatSessions[currentSessionIndex]);
   }
 
   // Create a new session
@@ -1662,12 +1813,15 @@ newChatBtn.addEventListener("click", () => {
     ],
     favorite: false,
   };
+  
+  const newId = await chatDB.saveChatSession(newSession);
+  newSession.id = newId;
   chatSessions.push(newSession);
-  currentSessionIndex = chatSessions.length - 1; // Set the current session index to the new session
-  currentSession = [...newSession.messages]; // Reset the current session
-
-  // Save chat sessions to localStorage
-  saveChatSessions();
+  currentSessionIndex = chatSessions.length - 1;
+  currentSession = [...newSession.messages];
+  
+  // Store the new session as last opened
+  localStorage.setItem('lastSessionIndex', currentSessionIndex.toString());
 
   // Clear current chat and start a new one
   chatBody.innerHTML = "";
@@ -1684,6 +1838,92 @@ newChatBtn.addEventListener("click", () => {
   // Update the history sidebar
   loadChatHistory();
   historySidebar.classList.remove("open");
+});
+
+async function handleLargeFile(file) {
+  return new Promise((resolve, reject) => {
+    try {
+      console.log("Handling file of size:", file.size); // Debug log
+      
+      // For files larger than 5MB, we'll only store metadata
+      if (file.size > 50000000) { // 5MB limit
+        console.log("File is large, storing only metadata"); // Debug log
+        resolve({
+          name: file.name,
+          type: file.type,
+          size: file.size,
+          lastModified: file.lastModified,
+          data: null // Don't store the actual data for large files
+        });
+      } else {
+        console.log("File is small enough, reading contents"); // Debug log
+        const reader = new FileReader();
+        
+        reader.onload = (e) => {
+          console.log("File read successfully"); // Debug log
+          const base64String = e.target.result.split(",")[1];
+          resolve({
+            name: file.name,
+            type: file.type,
+            size: file.size,
+            lastModified: file.lastModified,
+            data: base64String
+          });
+        };
+        
+        reader.onerror = (error) => {
+          console.error("File read error:", error); // Debug log
+          reject(error);
+        };
+        
+        reader.readAsDataURL(file);
+      }
+    } catch (error) {
+      console.error("Error in handleLargeFile:", error); // Debug log
+      reject(error);
+    }
+  });
+}
+
+fileInput.addEventListener("change", async () => {
+  console.log("File input changed"); // Debug log
+  const file = fileInput.files[0];
+  if (!file) {
+    console.log("No file selected"); // Debug log
+    return;
+  }
+  
+  // Remove any existing preview
+  const existingPreview = document.querySelector(".file-preview");
+  if (existingPreview) existingPreview.remove();
+  
+  try {
+    console.log("Creating file preview"); // Debug log
+    const filePreview = updateFilePreview(file);
+    
+    console.log("Handling file:", file.name, "Size:", file.size); // Debug log
+    const fileInfo = await handleLargeFile(file);
+    console.log("File info processed:", fileInfo); // Debug log
+    
+    // Extract text from the file (for supported types)
+    console.log("Extracting text from file"); // Debug log
+    const fileText = await extractTextFromFile(file);
+    console.log("File text extracted:", fileText ? "Success" : "No text"); // Debug log
+    
+    // Store file data in userData
+    userData.file = {
+      data: fileInfo.data,
+      mime_type: fileInfo.type,
+      name: fileInfo.name,
+      textContent: fileText
+    };
+    console.log("File data stored in userData"); // Debug log
+  } catch (error) {
+    console.error("Error processing file:", error); // Debug log
+    fileInput.value = "";
+    const filePreview = document.querySelector(".file-preview");
+    if (filePreview) filePreview.remove();
+  }
 });
 
 // Load Chat History
@@ -1756,17 +1996,34 @@ function showConfirmationDialog(index) {
   };
 }
 
-// Delete Chat
-function deleteChat(index) {
-  chatSessions.splice(index, 1);
-  saveChatSessions(); // Save the updated chat sessions
-  loadChatHistory(); // Refresh the history sidebar
+// Update the deleteChat function
+async function deleteChat(index) {
+  const sessionToDelete = chatSessions[index];
+  
+  try {
+    await chatDB.deleteChatSession(sessionToDelete.id);
+    chatSessions.splice(index, 1);
+    loadChatHistory(); // Refresh the history sidebar
 
-  // If the deleted chat was the current session, reset the current session
-  if (currentSessionIndex === index) {
-    currentSessionIndex = -1;
-    currentSession = [];
-    chatBody.innerHTML = ""; // Clear the chat body
+    // If the deleted chat was the current session, reset the current session
+    if (currentSessionIndex === index) {
+      currentSessionIndex = -1;
+      currentSession = [];
+      chatBody.innerHTML = ""; // Clear the chat body
+      localStorage.removeItem('lastSessionIndex');
+      
+      // If there are other chats, load the last one
+      if (chatSessions.length > 0) {
+        const newIndex = chatSessions.length - 1;
+        loadChat(newIndex);
+      }
+    } else if (currentSessionIndex > index) {
+      // Adjust the current session index if needed
+      currentSessionIndex--;
+      localStorage.setItem('lastSessionIndex', currentSessionIndex.toString());
+    }
+  } catch (error) {
+    console.error('Error deleting chat:', error);
   }
 }
 
@@ -1778,7 +2035,7 @@ function loadChat(index) {
   // Save the current session before switching
   if (currentSessionIndex !== -1) {
     chatSessions[currentSessionIndex].messages = [...currentSession];
-    saveChatSessions(); // Save the updated chat sessions
+    saveChatSessions();
   }
 
   const session = chatSessions[index];
@@ -1787,6 +2044,9 @@ function loadChat(index) {
   // Set the current session to the loaded chat's messages
   currentSessionIndex = index;
   currentSession = session.messages;
+
+  // Store the last opened chat index
+  localStorage.setItem('lastSessionIndex', index.toString());
 
   // Display all messages in the chat with proper formatting
   loadChatMessages(session.messages);
