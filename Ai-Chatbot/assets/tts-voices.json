@@ -1,0 +1,246 @@
+{
+    "English (United States)": {
+      "code": "en-US",
+      "voices": [
+        { "name": "John (Male)", "code": "en-US-Standard-A" },
+        { "name": "Michael (Male)", "code": "en-US-Standard-B" },
+        { "name": "Emily (Female)", "code": "en-US-Standard-C" },
+        { "name": "David (Male)", "code": "en-US-Standard-D" },
+        { "name": "Olivia (Female)", "code": "en-US-Standard-E" },
+        { "name": "Sophia (Female)", "code": "en-US-Standard-F" },
+        { "name": "Emma (Female)", "code": "en-US-Standard-G" },
+        { "name": "Ava (Female)", "code": "en-US-Standard-H" },
+        { "name": "James (Male)", "code": "en-US-Standard-I" },
+        { "name": "William (Male)", "code": "en-US-Standard-J" },
+        { "name": "Liam (Male)", "code": "en-US-Wavenet-A" },
+        { "name": "Noah (Male)", "code": "en-US-Wavenet-B" },
+        { "name": "Isabella (Female)", "code": "en-US-Wavenet-C" },
+        { "name": "Mason (Male)", "code": "en-US-Wavenet-D" },
+        { "name": "Charlotte (Female)", "code": "en-US-Wavenet-E" },
+        { "name": "Ethan (Male)", "code": "en-US-Wavenet-F" },
+        { "name": "Amelia (Female)", "code": "en-US-Wavenet-G" },
+        { "name": "Alexander (Male)", "code": "en-US-Wavenet-H" },
+        { "name": "Mia (Female)", "code": "en-US-Wavenet-I" },
+        { "name": "Benjamin (Male)", "code": "en-US-Wavenet-J" }
+      ]
+    },
+    "English (United Kingdom)": {
+      "code": "en-GB",
+      "voices": [
+        { "name": "Sophie (Female)", "code": "en-GB-Standard-A" },
+        { "name": "Oliver (Male)", "code": "en-GB-Standard-B" },
+        { "name": "Charlotte (Female)", "code": "en-GB-Standard-C" },
+        { "name": "George (Male)", "code": "en-GB-Standard-D" },
+        { "name": "Amelia (Female)", "code": "en-GB-Standard-F" },
+        { "name": "Isla (Female)", "code": "en-GB-Standard-N" },
+        { "name": "Harry (Male)", "code": "en-GB-Standard-O" },
+        { "name": "Emily (Female)", "code": "en-GB-Wavenet-A" },
+        { "name": "Jack (Male)", "code": "en-GB-Wavenet-B" },
+        { "name": "Olivia (Female)", "code": "en-GB-Wavenet-C" },
+        { "name": "Charlie (Male)", "code": "en-GB-Wavenet-D" },
+        { "name": "Grace (Female)", "code": "en-GB-Wavenet-F" },
+        { "name": "Ella (Female)", "code": "en-GB-Wavenet-N" },
+        { "name": "Thomas (Male)", "code": "en-GB-Wavenet-O" }
+      ]
+    },
+    "Spanish (Spain)": {
+      "code": "es-ES",
+      "voices": [
+        { "name": "Lucía (Female)", "code": "es-ES-Standard-A" },
+        { "name": "Carlos (Male)", "code": "es-ES-Standard-B" },
+        { "name": "Sofía (Female)", "code": "es-ES-Standard-C" },
+        { "name": "Elena (Female)", "code": "es-ES-Standard-D" },
+        { "name": "Javier (Male)", "code": "es-ES-Standard-E" },
+        { "name": "María (Female)", "code": "es-ES-Standard-F" },
+        { "name": "Antonio (Male)", "code": "es-ES-Standard-G" },
+        { "name": "Carmen (Female)", "code": "es-ES-Standard-H" },
+        { "name": "Diego (Male)", "code": "es-ES-Wavenet-B" },
+        { "name": "Isabel (Female)", "code": "es-ES-Wavenet-C" },
+        { "name": "Laura (Female)", "code": "es-ES-Wavenet-D" },
+        { "name": "Pablo (Male)", "code": "es-ES-Wavenet-E" },
+        { "name": "Ana (Female)", "code": "es-ES-Wavenet-F" },
+        { "name": "Miguel (Male)", "code": "es-ES-Wavenet-G" },
+        { "name": "Sara (Female)", "code": "es-ES-Wavenet-H" }
+      ]
+    },
+    "Spanish (United States)": {
+      "code": "es-US",
+      "voices": [
+        { "name": "Isabella (Female)", "code": "es-US-Standard-A" },
+        { "name": "Mateo (Male)", "code": "es-US-Standard-B" },
+        { "name": "Diego (Male)", "code": "es-US-Standard-C" },
+        { "name": "Camila (Female)", "code": "es-US-Wavenet-A" },
+        { "name": "Santiago (Male)", "code": "es-US-Wavenet-B" },
+        { "name": "Lucas (Male)", "code": "es-US-Wavenet-C" }
+      ]
+    },
+    "French (France)": {
+      "code": "fr-FR",
+      "voices": [
+        { "name": "Camille (Female)", "code": "fr-FR-Standard-A" },
+        { "name": "Louis (Male)", "code": "fr-FR-Standard-B" },
+        { "name": "Chloé (Female)", "code": "fr-FR-Standard-C" },
+        { "name": "Pierre (Male)", "code": "fr-FR-Standard-D" },
+        { "name": "Emma (Female)", "code": "fr-FR-Standard-E" },
+        { "name": "Jade (Female)", "code": "fr-FR-Standard-F" },
+        { "name": "Gabriel (Male)", "code": "fr-FR-Standard-G" },
+        { "name": "Léa (Female)", "code": "fr-FR-Wavenet-A" },
+        { "name": "Hugo (Male)", "code": "fr-FR-Wavenet-B" },
+        { "name": "Manon (Female)", "code": "fr-FR-Wavenet-C" },
+        { "name": "Thomas (Male)", "code": "fr-FR-Wavenet-D" },
+        { "name": "Zoé (Female)", "code": "fr-FR-Wavenet-E" },
+        { "name": "Lucas (Male)", "code": "fr-FR-Wavenet-F" },
+        { "name": "Clara (Female)", "code": "fr-FR-Wavenet-G" }
+      ]
+    },
+    "French (Canada)": {
+      "code": "fr-CA",
+      "voices": [
+        { "name": "Léa (Female)", "code": "fr-CA-Standard-A" },
+        { "name": "Liam (Male)", "code": "fr-CA-Standard-B" },
+        { "name": "Zoé (Female)", "code": "fr-CA-Standard-C" },
+        { "name": "Noah (Male)", "code": "fr-CA-Standard-D" },
+        { "name": "Élodie (Female)", "code": "fr-CA-Wavenet-A" },
+        { "name": "Nathan (Male)", "code": "fr-CA-Wavenet-B" },
+        { "name": "Alice (Female)", "code": "fr-CA-Wavenet-C" },
+        { "name": "Samuel (Male)", "code": "fr-CA-Wavenet-D" }
+      ]
+    },
+    "German (Germany)": {
+      "code": "de-DE",
+      "voices": [
+        { "name": "Anna (Female)", "code": "de-DE-Standard-A" },
+        { "name": "Max (Male)", "code": "de-DE-Standard-B" },
+        { "name": "Lena (Female)", "code": "de-DE-Standard-C" },
+        { "name": "Paul (Male)", "code": "de-DE-Standard-D" },
+        { "name": "Sophie (Female)", "code": "de-DE-Standard-E" },
+        { "name": "Felix (Male)", "code": "de-DE-Standard-F" },
+        { "name": "Laura (Female)", "code": "de-DE-Standard-G" },
+        { "name": "Leon (Male)", "code": "de-DE-Standard-H" },
+        { "name": "Hannah (Female)", "code": "de-DE-Wavenet-A" },
+        { "name": "Jonas (Male)", "code": "de-DE-Wavenet-B" },
+        { "name": "Mia (Female)", "code": "de-DE-Wavenet-C" },
+        { "name": "Tim (Male)", "code": "de-DE-Wavenet-D" },
+        { "name": "Emma (Female)", "code": "de-DE-Wavenet-E" },
+        { "name": "Lukas (Male)", "code": "de-DE-Wavenet-F" },
+        { "name": "Lea (Female)", "code": "de-DE-Wavenet-G" },
+        { "name": "Ben (Male)", "code": "de-DE-Wavenet-H" }
+      ]
+    },
+    "Italian (Italy)": {
+      "code": "it-IT",
+      "voices": [
+        { "name": "Giulia (Female)", "code": "it-IT-Standard-A" },
+        { "name": "Marco (Male)", "code": "it-IT-Standard-C" },
+        { "name": "Sofia (Female)", "code": "it-IT-Standard-E" },
+        { "name": "Luca (Male)", "code": "it-IT-Standard-D" },
+        { "name": "Alessia (Female)", "code": "it-IT-Standard-B" },
+        { "name": "Giovanni (Male)", "code": "it-IT-Standard-F" },
+        { "name": "Chiara (Female)", "code": "it-IT-Wavenet-A" },
+        { "name": "Matteo (Male)", "code": "it-IT-Wavenet-B" },
+        { "name": "Francesca (Female)", "code": "it-IT-Wavenet-C" },
+        { "name": "Andrea (Male)", "code": "it-IT-Wavenet-D" },
+        { "name": "Martina (Female)", "code": "it-IT-Wavenet-E" },
+        { "name": "Davide (Male)", "code": "it-IT-Wavenet-F" }
+      ]
+    },
+    "Portuguese (Brazil)": {
+      "code": "pt-BR",
+      "voices": [
+        { "name": "Ana (Female)", "code": "pt-BR-Standard-A" },
+        { "name": "Pedro (Male)", "code": "pt-BR-Standard-B" },
+        { "name": "Maria (Female)", "code": "pt-BR-Standard-C" },
+        { "name": "João (Male)", "code": "pt-BR-Standard-D" },
+        { "name": "Gabriela (Female)", "code": "pt-BR-Standard-E" },
+        { "name": "Lucas (Male)", "code": "pt-BR-Wavenet-A" },
+        { "name": "Isabella (Female)", "code": "pt-BR-Wavenet-B" },
+        { "name": "Rafael (Male)", "code": "pt-BR-Wavenet-C" },
+        { "name": "Laura (Female)", "code": "pt-BR-Wavenet-D" },
+        { "name": "Guilherme (Male)", "code": "pt-BR-Wavenet-E" }
+      ]
+    },
+    "Chinese (Mandarin, China)": {
+      "code": "cmn-CN",
+      "voices": [
+        { "name": "Wei (Male)", "code": "cmn-CN-Standard-B" },
+        { "name": "Li (Female)", "code": "cmn-CN-Standard-A" },
+        { "name": "Zhang (Male)", "code": "cmn-CN-Standard-C" },
+        { "name": "Mei (Female)", "code": "cmn-CN-Standard-D" },
+        { "name": "Chen (Male)", "code": "cmn-CN-Wavenet-A" },
+        { "name": "Xiao (Female)", "code": "cmn-CN-Wavenet-B" },
+        { "name": "Wang (Male)", "code": "cmn-CN-Wavenet-C" },
+        { "name": "Yan (Female)", "code": "cmn-CN-Wavenet-D" }
+      ]
+    },
+    "Japanese (Japan)": {
+      "code": "ja-JP",
+      "voices": [
+        { "name": "Yuki (Female)", "code": "ja-JP-Standard-A" },
+        { "name": "Hiroshi (Male)", "code": "ja-JP-Standard-C" },
+        { "name": "Aoi (Female)", "code": "ja-JP-Standard-B" },
+        { "name": "Riku (Male)", "code": "ja-JP-Standard-D" },
+        { "name": "Sakura (Female)", "code": "ja-JP-Wavenet-A" },
+        { "name": "Kaito (Male)", "code": "ja-JP-Wavenet-B" },
+        { "name": "Hina (Female)", "code": "ja-JP-Wavenet-C" },
+        { "name": "Ren (Male)", "code": "ja-JP-Wavenet-D" }
+      ]
+    },
+    "Korean (South Korea)": {
+      "code": "ko-KR",
+      "voices": [
+        { "name": "Minji (Female)", "code": "ko-KR-Standard-A" },
+        { "name": "Seung (Male)", "code": "ko-KR-Standard-C" },
+        { "name": "Hana (Female)", "code": "ko-KR-Standard-B" },
+        { "name": "Joon (Male)", "code": "ko-KR-Standard-D" },
+        { "name": "Eunji (Female)", "code": "ko-KR-Wavenet-A" },
+        { "name": "Minho (Male)", "code": "ko-KR-Wavenet-B" },
+        { "name": "Yuna (Female)", "code": "ko-KR-Wavenet-C" },
+        { "name": "Taehyung (Male)", "code": "ko-KR-Wavenet-D" }
+      ]
+    },
+    "Russian (Russia)": {
+      "code": "ru-RU",
+      "voices": [
+        { "name": "Anastasia (Female)", "code": "ru-RU-Standard-A" },
+        { "name": "Dmitry (Male)", "code": "ru-RU-Standard-B" },
+        { "name": "Olga (Female)", "code": "ru-RU-Standard-C" },
+        { "name": "Ivan (Male)", "code": "ru-RU-Standard-D" },
+        { "name": "Ekaterina (Female)", "code": "ru-RU-Standard-E" },
+        { "name": "Sergei (Male)", "code": "ru-RU-Wavenet-A" },
+        { "name": "Natalia (Female)", "code": "ru-RU-Wavenet-B" },
+        { "name": "Alexei (Male)", "code": "ru-RU-Wavenet-C" },
+        { "name": "Svetlana (Female)", "code": "ru-RU-Wavenet-D" },
+        { "name": "Vladimir (Male)", "code": "ru-RU-Wavenet-E" }
+      ]
+    },
+    "Hindi (India)": {
+      "code": "hi-IN",
+      "voices": [
+        { "name": "Priya (Female)", "code": "hi-IN-Standard-A" },
+        { "name": "Rahul (Male)", "code": "hi-IN-Standard-B" },
+        { "name": "Anjali (Female)", "code": "hi-IN-Standard-D" },
+        { "name": "Vikram (Male)", "code": "hi-IN-Standard-C" },
+        { "name": "Kavita (Female)", "code": "hi-IN-Standard-E" },
+        { "name": "Arjun (Male)", "code": "hi-IN-Standard-F" },
+        { "name": "Neha (Female)", "code": "hi-IN-Wavenet-A" },
+        { "name": "Rohan (Male)", "code": "hi-IN-Wavenet-B" },
+        { "name": "Pooja (Female)", "code": "hi-IN-Wavenet-C" },
+        { "name": "Aryan (Male)", "code": "hi-IN-Wavenet-D" },
+        { "name": "Sonia (Female)", "code": "hi-IN-Wavenet-E" },
+        { "name": "Raj (Male)", "code": "hi-IN-Wavenet-F" }
+      ]
+    },
+    "Arabic (Gulf)": {
+      "code": "ar-XA",
+      "voices": [
+        { "name": "Layla (Female)", "code": "ar-XA-Standard-A" },
+        { "name": "Omar (Male)", "code": "ar-XA-Standard-B" },
+        { "name": "Fatima (Female)", "code": "ar-XA-Standard-D" },
+        { "name": "Khalid (Male)", "code": "ar-XA-Standard-C" },
+        { "name": "Aisha (Female)", "code": "ar-XA-Wavenet-A" },
+        { "name": "Youssef (Male)", "code": "ar-XA-Wavenet-B" },
+        { "name": "Zahra (Female)", "code": "ar-XA-Wavenet-C" },
+        { "name": "Ali (Male)", "code": "ar-XA-Wavenet-D" }
+      ]
+    }
+  }

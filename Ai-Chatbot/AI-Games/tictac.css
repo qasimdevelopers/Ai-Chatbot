@@ -1,0 +1,148 @@
+body {
+    font-family: 'Arial', sans-serif;
+    text-align: center;
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    justify-content: center;
+    align-items: center;
+}
+
+h1 {
+    color: #fff;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.board {
+    display: grid;
+    grid-template-columns: repeat(3, 120px);
+    grid-gap: 10px;
+    margin: 20px auto;
+    width: 390px;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
+}
+
+.cell {
+    width: 120px;
+    height: 120px;
+    background-color: rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 4em;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    color: transparent;
+    position: relative;
+    overflow: hidden;
+}
+
+.cell:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+    transform: scale(1.05);
+}
+
+/* X and O drawing animations */
+.cell.o::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 70%;
+    height: 70%;
+    border: 10px solid #4ecdc4;
+    border-radius: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    animation: drawO 0.4s ease-in-out forwards;
+    z-index: 1;
+}
+
+@keyframes drawO {
+    to { transform: translate(-50%, -50%) scale(1); }
+}
+
+.cell.x::before, .cell.x::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 10px;
+    height: 0;
+    background-color: #ff6f61;
+    border-radius: 5px;
+    transform-origin: center;
+    transform: translate(-50%, -50%) rotate(45deg);
+    animation: drawXLine 0.4s ease-in-out forwards;
+    z-index: 1;
+}
+
+.cell.x::after {
+    transform: translate(-50%, -50%) rotate(-45deg);
+    animation-delay: 0.2s;
+}
+
+@keyframes drawXLine {
+    to { height: 70%; }
+}
+
+/* Winning/draw animations */
+@keyframes collectAndFix {
+    0% { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(var(--translateX), var(--translateY)) scale(var(--scale, 1.5)); }
+}
+
+@keyframes drawCollect {
+    0% { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(var(--translateX), var(--translateY)) scale(var(--scale, 1.5)); }
+}
+
+
+
+
+
+.mode-buttons {
+    display: flex;
+    gap: 10px;
+    margin-bottom: -10px;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 1em;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+#multiplayerButton {
+    background-color: #4ecdc4;
+    color: white;
+}
+
+#aiButton {
+    background-color: #ff6f61;
+    color: white;
+}
+
+#resetButton {
+    background-color: #2ecc71;
+    color: white;
+    margin-top: -10px;
+}
+
+button:hover {
+    transform: scale(1.05);
+    opacity: 0.9;
+}
+
